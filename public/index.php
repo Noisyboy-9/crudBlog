@@ -14,7 +14,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $containerBuilder = new ContainerBuilder();
 
 if (false) { // Should be set to true in production
-	$containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
 }
 
 // Set up settings
@@ -39,7 +39,8 @@ $callableResolver = $app->getCallableResolver();
 
 // Register middleware
 $middleware = require __DIR__ . '/../app/middleware.php';
-$middleware($app);
+$middleware($app, $container);
+
 
 // Register routes
 $routes = require __DIR__ . '/../app/routes.php';
@@ -64,8 +65,8 @@ register_shutdown_function($shutdownHandler);
 $app->addRoutingMiddleware();
 
 // Add Error Middleware
-$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
-$errorMiddleware->setDefaultErrorHandler($errorHandler);
+$settings = $container->get('settings');
+$errorMiddleware = $app->addErrorMiddleware($settings['displayErrorDetails'], $settings['logErrors'], $settings['logErrorDetails']);
 
 // Run App & Emit Response
 $response = $app->handle($request);
