@@ -4,9 +4,9 @@
 namespace App\Domain\Blog\Repositeries;
 
 
-use App\Infrastructure\Persistance\Blog\MongoDB\BlogMongoDB;
+use App\Domain\Blog\ValueObjects\PostIdValueObject as IdValueObj;
 
-class PostRepositrey extends BlogMongoDB implements PostRepositreyInterface
+class PostRepositrey implements PostRepositreyInterface
 {
 
     private $db;
@@ -24,5 +24,17 @@ class PostRepositrey extends BlogMongoDB implements PostRepositreyInterface
     public function getAll()
     {
         return $this->database->getAllPosts()->toArray();
+    }
+
+    /**
+     * get a post by its id
+     *
+     * @param IdValueObj $idValueObject
+     * @return mixed
+     */
+    public function getById(IdValueObj $idValueObject)
+    {
+        $id = $idValueObject->getId();
+        return $this->database->getPostById($id)->toArray();
     }
 }

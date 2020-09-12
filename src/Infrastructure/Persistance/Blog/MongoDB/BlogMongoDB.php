@@ -6,6 +6,9 @@ namespace App\Infrastructure\Persistance\Blog\MongoDB;
 
 use App\Infrastructure\DatabaseConnections\MongoDB;
 use DI\Container;
+use MongoDB\BSON\ObjectId;
+use MongoDB\Collection;
+use MongoDB\Model\BSONDocument;
 
 class BlogMongoDB extends MongoDB
 {
@@ -16,11 +19,20 @@ class BlogMongoDB extends MongoDB
      */
     public $postCollection;
 
+
+    /**
+     * BlogMongoDB constructor for making a connection to mongodb
+     */
     public function __construct()
     {
         $this->connection();
     }
 
+    /**
+     * handle connection to mongo db and select and svae postsCollection as a property
+     *
+     *
+     */
     public function connection()
     {
         $this->mongoConnection(new Container());
@@ -28,9 +40,25 @@ class BlogMongoDB extends MongoDB
         $this->postCollection = $this->database->selectCollection('posts');
     }
 
+    /**
+     * get all posts in the db
+     *
+     * @return BSONDocument
+     */
     public function getAllPosts()
     {
         return $this->postCollection->find();
     }
 
+    /**
+     * get a post specified by id
+     *
+     * @param string $id
+     * @return mixed
+     */
+    public function getPostById(string $id)
+    {
+        $id = new ObjectId($id);
+        return $this->postCollection->find(['_id' => $id]);
+    }
 }

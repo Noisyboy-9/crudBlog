@@ -6,7 +6,7 @@ use Slim\App;
 
 return function (App $app) {
     $app->get('/posts', PostService::class . ':index');
-
+    $app->get('/posts/{id}', PostService::class . ':show');
     /*
      * /posts : get -> get all posts
      * /posts/1 : get -> get just one post
