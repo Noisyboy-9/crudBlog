@@ -4,7 +4,7 @@
 namespace App\Domain\Blog\ValueObjects;
 
 
-use http\Exception\InvalidArgumentException;
+use App\Domain\Blog\Exceptions\InvalidPostIdException;
 use MongoDB\BSON\ObjectId;
 
 class PostIdValueObject
@@ -29,6 +29,7 @@ class PostIdValueObject
      *
      * @param string $id
      * @return static
+     * @throws InvalidPostIdException
      */
     public static function makeFrom(string $id)
     {
@@ -36,7 +37,7 @@ class PostIdValueObject
         if (new ObjectId($id)) {
             return new static($id);
         } else {
-            throw new InvalidArgumentException('id must be a valid number bigger than 0');
+            throw new InvalidPostIdException('id must be a valid number bigger than 0');
         }
     }
 
