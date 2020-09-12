@@ -7,6 +7,7 @@ namespace App\Application\services\Blog;
 use App\Application\services\Service;
 use App\Domain\Blog\Post;
 use App\Domain\Blog\Repositeries\PostRepositrey;
+use App\Domain\Blog\ValueObjects\PostBodyValueObject;
 use App\Domain\Blog\ValueObjects\PostIdValueObject;
 use App\Domain\Blog\ValueObjects\PostTitleValueObject;
 use App\Infrastructure\Persistance\Blog\MongoDB\BlogMongoDB;
@@ -65,9 +66,17 @@ class PostService extends Service
     public function store(Request $request, Response $response)
     {
         $body = $request->getParsedBody();
+
         $titleValueObject = PostTitleValueObject::makeFrom($body['title']);
         $bodyValueObject = PostBodyValueObject::makeFrom($body['body']);
 
-        $post = new Post($titleValueObject, $bodyValueObject);
+        $post = Post::createPostFrom($titleValueObject, $bodyValueObject);
+
+        $postArray = $this->postRepositrey->create($post);
+
+        return $this->responseWithJson([
+            'message' => 'post created successfuly',
+            'data' => $postArray
+        ], $response)->withStatus(202);
     }
 }

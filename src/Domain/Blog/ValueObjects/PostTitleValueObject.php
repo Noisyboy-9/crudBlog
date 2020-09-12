@@ -35,9 +35,9 @@ class PostTitleValueObject
     {
         if (strlen($title) > 8) {
             return new static($title);
-        } else {
-            throw new InvalidPostTitleException('post title must be larager than 8 characters', 422);
         }
+        throw new InvalidPostTitleException('post title must be larager than 8 characters', 422);
+
     }
 
     /**

@@ -7,7 +7,6 @@ namespace App\Infrastructure\Persistance\Blog\MongoDB;
 use App\Infrastructure\DatabaseConnections\MongoDB;
 use DI\Container;
 use MongoDB\BSON\ObjectId;
-use MongoDB\Collection;
 use MongoDB\Model\BSONDocument;
 
 class BlogMongoDB extends MongoDB
@@ -60,5 +59,18 @@ class BlogMongoDB extends MongoDB
     {
         $id = new ObjectId($id);
         return $this->postCollection->find(['_id' => $id]);
+    }
+
+    /**
+     * create a post
+     *
+     * @param array $post
+     * @return array $postWithId
+     */
+    public function createPost(array $post)
+    {
+        $insertId = $this->postCollection->insertOne($post)->getInsertedId();
+        $post['_id'] = $insertId;
+        return $post;
     }
 }

@@ -4,12 +4,11 @@
 namespace App\Domain\Blog\Repositeries;
 
 
+use App\Domain\Blog\Post;
 use App\Domain\Blog\ValueObjects\PostIdValueObject as IdValueObj;
 
 class PostRepositrey implements PostRepositreyInterface
 {
-
-    private $db;
 
     public function __construct($database)
     {
@@ -36,5 +35,10 @@ class PostRepositrey implements PostRepositreyInterface
     {
         $id = $idValueObject->getId();
         return $this->database->getPostById($id)->toArray();
+    }
+
+    public function create(Post $post)
+    {
+        return $this->database->createPost($post->getPostArray());
     }
 }
