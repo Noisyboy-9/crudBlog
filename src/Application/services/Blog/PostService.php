@@ -98,4 +98,29 @@ class PostService extends Service
 
         return $this->responseWithJson([], $response)->withStatus(204);
     }
+
+    /**
+     * update a post by id
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     */
+    public function update(Request $request, Response $response, array $args)
+    {
+        $id = $args['id'];
+        $idValueObject = PostIdValueObject::makeFrom($id);
+
+        $requestBody = $request->getParsedBody();
+        $titleValueObject = PostTitleValueObject::makeFrom($requestBody['title']);
+        $bodyValueObject = PostBodyValueObject::makeFrom($requestBody['body']);
+
+        $newPost = Post::createPostFrom($titleValueObject, $bodyValueObject);
+
+        $postArray = $this->postRepositrey->update($idValueObject, $newPost);
+
+        return $this->responseWithJson([
+            'message' => 'post updated successfuly',
+        ], $response)->withStatus(200);
+    }
 }

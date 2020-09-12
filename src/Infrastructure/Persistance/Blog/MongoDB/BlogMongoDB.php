@@ -19,7 +19,6 @@ class BlogMongoDB extends MongoDB
      */
     public $postCollection;
 
-
     /**
      * BlogMongoDB constructor for making a connection to mongodb
      */
@@ -84,7 +83,7 @@ class BlogMongoDB extends MongoDB
     {
         $idObject = new ObjectId($id);
 
-        if ($this->PostExists($idObject)) {
+        if ($this->postExists($idObject)) {
             return $this->postCollection->deleteOne(['_id' => $idObject]);
         }
 
@@ -97,9 +96,22 @@ class BlogMongoDB extends MongoDB
      * @param ObjectId $idObject
      * @return mixed
      */
-    private function PostExists(ObjectId $idObject)
+    private function postExists(ObjectId $idObject)
     {
         return $this->postCollection->find(['_id' => $idObject])->toArray() ? true : false;
 
+    }
+
+    /**
+     * @param string $id
+     */
+    public function updatePost(string $id, array $newPost)
+    {
+        $objectId = new ObjectId($id);
+        if ($this->postExists($objectId)) {
+            return $this->postCollection->updateOne(['_id' => $objectId], ['$set' => $newPost]);
+        }
+
+        throw new PostDoesNotExistException('post does not exist', 404);
     }
 }

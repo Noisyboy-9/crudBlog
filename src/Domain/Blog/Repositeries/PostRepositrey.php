@@ -48,9 +48,21 @@ class PostRepositrey implements PostRepositreyInterface
         return $this->database->createPost($post->getPostArray());
     }
 
+    /**
+     * delete a post
+     *
+     * @param IdValueObj $idValueObject
+     * @return mixed
+     */
     public function delete(IdValueObj $idValueObject)
     {
         $id = $idValueObject->getId();
         return $this->database->deletePost($id);
+    }
+
+    public function update(IdValueObj $idValueObject, Post $post)
+    {
+        $id = $idValueObject->getId();
+        return $this->database->updatePost($id, $post->getPostArray());
     }
 }
