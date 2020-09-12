@@ -16,6 +16,11 @@ class BlogMongoDB extends MongoDB
      */
     public $postCollection;
 
+    public function __construct()
+    {
+        $this->connection();
+    }
+
     public function connection()
     {
         $this->mongoConnection(new Container());
@@ -23,5 +28,9 @@ class BlogMongoDB extends MongoDB
         $this->postCollection = $this->database->selectCollection('posts');
     }
 
+    public function getAllPosts()
+    {
+        return $this->postCollection->find();
+    }
 
 }

@@ -14,7 +14,6 @@ abstract class MongoDB
     public function mongoConnection(Container $container)
     {
         $mongo = new Client("mongodb://localhost:27017");
-
         $this->database = $mongo->selectDatabase('blog');
     }
 }
