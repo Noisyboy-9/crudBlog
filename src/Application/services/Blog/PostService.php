@@ -5,6 +5,7 @@ namespace App\Application\services\Blog;
 
 
 use App\Application\services\Service;
+use App\Domain\Blog\Exceptions\InvalidPostIdException;
 use App\Domain\Blog\Post;
 use App\Domain\Blog\Repositeries\PostRepositrey;
 use App\Domain\Blog\ValueObjects\PostBodyValueObject;
@@ -78,5 +79,23 @@ class PostService extends Service
             'message' => 'post created successfuly',
             'data' => $postArray
         ], $response)->withStatus(202);
+    }
+
+    /**
+     * delete a post by id
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @throws InvalidPostIdException
+     */
+    public function destroy(Request $request, Response $response, array $args)
+    {
+        $id = $args['id'];
+        $idValueObject = PostIdValueObject::makeFrom($id);
+
+        $this->postRepositrey->delete($idValueObject);
+
+        return $this->responseWithJson([], $response)->withStatus(204);
     }
 }

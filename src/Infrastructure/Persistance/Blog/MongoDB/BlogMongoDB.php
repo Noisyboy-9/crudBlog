@@ -4,6 +4,7 @@
 namespace App\Infrastructure\Persistance\Blog\MongoDB;
 
 
+use App\Domain\Blog\Exceptions\PostDoesNotExistException;
 use App\Infrastructure\DatabaseConnections\MongoDB;
 use DI\Container;
 use MongoDB\BSON\ObjectId;
@@ -72,5 +73,33 @@ class BlogMongoDB extends MongoDB
         $insertId = $this->postCollection->insertOne($post)->getInsertedId();
         $post['_id'] = $insertId;
         return $post;
+    }
+
+    /**
+     * delete a post by provided id
+     *
+     * @param string $id
+     */
+    public function deletePost(string $id)
+    {
+        $idObject = new ObjectId($id);
+
+        if ($this->PostExists($idObject)) {
+            return $this->postCollection->deleteOne(['_id' => $idObject]);
+        }
+
+        throw new PostDoesNotExistException('post does not exist', 404);
+    }
+
+    /**
+     * check if the post exists
+     *
+     * @param ObjectId $idObject
+     * @return mixed
+     */
+    private function PostExists(ObjectId $idObject)
+    {
+        return $this->postCollection->find(['_id' => $idObject])->toArray() ? true : false;
+
     }
 }
