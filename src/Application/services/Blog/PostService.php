@@ -5,8 +5,10 @@ namespace App\Application\services\Blog;
 
 
 use App\Application\services\Service;
+use App\Domain\Blog\Post;
 use App\Domain\Blog\Repositeries\PostRepositrey;
 use App\Domain\Blog\ValueObjects\PostIdValueObject;
+use App\Domain\Blog\ValueObjects\PostTitleValueObject;
 use App\Infrastructure\Persistance\Blog\MongoDB\BlogMongoDB;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -36,7 +38,7 @@ class PostService extends Service
     public function index(Request $request, Response $response)
     {
         $posts = $this->postRepositrey->getAll();
-        return $this->responseWithJson($posts, $response);
+        return $this->responseWithJson($posts, $response)->withStatus(200);
     }
 
     /**
@@ -49,8 +51,23 @@ class PostService extends Service
     public function show(Request $request, Response $response, array $args)
     {
         $id = $args['id'];
-        $idValueObject = (PostIdValueObject::makeFrom($id));
-        $post =  $this->postRepositrey->getById($idValueObject);
-        return $this->responseWithJson($post, $response);
+        $idValueObject = PostIdValueObject::makeFrom($id);
+        $post = $this->postRepositrey->getById($idValueObject);
+        return $this->responseWithJson($post, $response)->withStatus(200);
+    }
+
+    /**
+     * create a post and store it in the database;
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function store(Request $request, Response $response)
+    {
+        $body = $request->getParsedBody();
+        $titleValueObject = PostTitleValueObject::makeFrom($body['title']);
+        $bodyValueObject = PostBodyValueObject::makeFrom($body['body']);
+
+        $post = new Post($titleValueObject, $bodyValueObject);
     }
 }

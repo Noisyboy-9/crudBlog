@@ -37,7 +37,7 @@ class PostIdValueObject
         if (new ObjectId($id)) {
             return new static($id);
         } else {
-            throw new InvalidPostIdException('id must be a valid number bigger than 0');
+            throw new InvalidPostIdException('id must be a valid number bigger than 0', 404);
         }
     }
 

@@ -7,9 +7,8 @@ use Slim\App;
 return function (App $app) {
     $app->get('/posts', PostService::class . ':index');
     $app->get('/posts/{id}', PostService::class . ':show');
+    $app->post('/posts' , PostService::class . ':store');
     /*
-     * /posts : get -> get all posts
-     * /posts/1 : get -> get just one post
      * /posts : post -> create a post
      * /posts/1 : delete -> delete a post
      * /posts/1 : update a post
